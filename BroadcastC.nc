@@ -8,6 +8,9 @@ module BroadcastC
 	uses interface AMSend;
 	uses interface Receive;
 	uses interface SplitControl as AMControl;
+
+	// rssi
+	uses interface CC2420Packet;
 }
 
 implementation 
@@ -53,10 +56,13 @@ implementation
 
 				b_first_time = FALSE; // set flag to false
 
-				// broadcast
-				send_msg = call AMSend.getPayload(&pkt, sizeof(BroadcastMsg));
-				memcpy(send_msg, rec_msg, sizeof(BroadcastMsg));
-				if (call AMSend.send(AM_BROADCAST_ADDR, &pkt, sizeof(BroadcastMsg)) == SUCCESS) busy = TRUE;
+				if (call CC2420Packet.getRssi(msg) < -40)
+				{
+					// broadcast
+					send_msg = call AMSend.getPayload(&pkt, sizeof(BroadcastMsg));
+					memcpy(send_msg, rec_msg, sizeof(BroadcastMsg));
+					if (call AMSend.send(AM_BROADCAST_ADDR, &pkt, sizeof(BroadcastMsg)) == SUCCESS) busy = TRUE;
+				}
 			}
 		}
 		// if not first, do nothing
