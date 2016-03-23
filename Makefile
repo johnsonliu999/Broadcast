@@ -1,0 +1,6 @@
+COMPONENT=BroadcastAppC
+CFLAGS += -DCC2420_DEF_CHANNEL=14   #信道设定为14
+CFLAGS += -DCC2420_DEF_RFPOWER=1	#功能设定为1
+CFLAGS += -I$(TOSDIR)/lib/printf
+
+include $(MAKERULES)
